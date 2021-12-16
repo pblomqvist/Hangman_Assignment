@@ -25,7 +25,7 @@ namespace Hangman
                         break;
 
                     case 1:
-                        Console.WriteLine("Let's play Hangman!");
+                        Console.WriteLine("Let's play Hangman!\n");
                         Hangman();
                         break;
 
@@ -89,14 +89,16 @@ namespace Hangman
                 
                 string playerGuess = Console.ReadLine();
                 bool guessTest = playerGuess.All(Char.IsLetter);
-                string errorMsg = "Cannot contain number, try single letter or entire word";
+                string errorMsg = "\nCannot contain number or blank space, try single letter or entire word";
 
-
-                while (guessTest == false)
+                while (guessTest == false || playerGuess.Length == 0)
                 {
                     WriteLine(errorMsg);
+                    WriteLine("\nYour guess:");
                     playerGuess = ReadLine();
+                    guessTest = playerGuess.All(Char.IsLetter);
                 }
+
 
                 if (playerGuess.Length != 1)
                 {
@@ -116,18 +118,17 @@ namespace Hangman
             {
                 string secretWord = GetRandomWord();
                 secretWord = secretWord.ToUpper();
-                
-                WriteLine("Secret word is " + secretWord);
-                
                 StringBuilder incorrectGuess = new StringBuilder("Wrong guesses: ");
                 
                 int lives = 10;
                 int counter = -1;
                 int wordLength = secretWord.Length;
+                int numberStore = 0;
+
                 char[] secretArray = secretWord.ToCharArray();
                 char[] printArray = new char[wordLength];
                 char[] guessedLetters = new char[26];
-                int numberStore = 0;
+                
                 bool victory = false;
                 bool gameOn = true;
 
@@ -149,13 +150,14 @@ namespace Hangman
                         gameOn = false;
                     }
 
+                    // Decide victory and if game should keep going
                     if (printProgress == secretWord)
                     {
                         victory = true;
                         gameOn = false;
                         letterFound = true;
+                        break;
                     }
-
 
                     Console.WriteLine("current progress: " + printProgress);
                     Console.Write("\n\n");
@@ -163,7 +165,6 @@ namespace Hangman
                     Console.Write("Guess one letter or entire word: ");
                     string playerGuess = GetUserInput();
 
-                    
                     if (playerGuess.Length == 1)
                     {
                        playerChar = Convert.ToChar(playerGuess);
@@ -195,7 +196,6 @@ namespace Hangman
                             
                         }
 
-
                         if (letterFound)
                         {
                             Console.WriteLine("Found {0}!", playerGuess);
@@ -215,7 +215,6 @@ namespace Hangman
 
                     WriteLine("\n" + incorrectGuess);
                     WriteLine("Lives remaining: {0}\n", lives);
-
 
                 }
 
