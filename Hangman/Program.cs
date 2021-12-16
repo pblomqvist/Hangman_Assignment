@@ -99,17 +99,15 @@ namespace Hangman
                     guessTest = playerGuess.All(Char.IsLetter);
                 }
 
-
                 if (playerGuess.Length != 1)
                 {
                     playerGuess = playerGuess.ToUpper();
-
-                } else
+                }
+                else
                 {
-                  
                     playerGuess = playerGuess.ToUpper();
                 }
-                
+
                 return playerGuess;
 
             }
@@ -165,9 +163,12 @@ namespace Hangman
                     Console.Write("Guess one letter or entire word: ");
                     string playerGuess = GetUserInput();
 
+
+                    //If user input is a single letter convert to char and put in char array
                     if (playerGuess.Length == 1)
                     {
                        playerChar = Convert.ToChar(playerGuess);
+
                     } else
                     {
                         if (playerGuess == secretWord)
@@ -176,7 +177,6 @@ namespace Hangman
                             gameOn = false;
                             letterFound = true;
                         }
-
                     }
 
                     if (!guessedLetters.Contains(playerChar))
