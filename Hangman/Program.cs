@@ -13,7 +13,7 @@ namespace Hangman
             bool running = true;
             while (running)
             {
-                WriteLine("What would you like to do?" +
+                WriteLine("\nWhat would you like to do?" +
                     "\n0: Exit" +
                     "\n1: Play Hangman");
                 int action = GetIntFromUser();
@@ -84,32 +84,27 @@ namespace Hangman
                 return result;
             }
 
-            static string ValidateUserChar()
+            static string GetUserInput()
             {
                 
                 string playerGuess = Console.ReadLine();
                 bool guessTest = playerGuess.All(Char.IsLetter);
                 string errorMsg = "Cannot contain number, try single letter or entire word";
 
+
+                while (guessTest == false)
+                {
+                    WriteLine(errorMsg);
+                    playerGuess = ReadLine();
+                }
+
                 if (playerGuess.Length != 1)
                 {
-                    while (playerGuess.Any(char.IsDigit))
-                    {
-                        WriteLine(errorMsg);
-                        playerGuess = ReadLine();
-                    }
-
                     playerGuess = playerGuess.ToUpper();
 
                 } else
                 {
-                    while (guessTest == false)
-                    {
-                        Console.WriteLine(errorMsg);
-                        playerGuess = Console.ReadLine();
-                        guessTest = playerGuess.All(Char.IsLetter);
-
-                    }
+                  
                     playerGuess = playerGuess.ToUpper();
                 }
                 
@@ -134,6 +129,7 @@ namespace Hangman
                 char[] guessedLetters = new char[26];
                 int numberStore = 0;
                 bool victory = false;
+                bool gameOn = true;
 
                 foreach (char letter in printArray)
                 {
@@ -141,47 +137,46 @@ namespace Hangman
                     printArray[counter] = '_';
                 }
 
-                while (!victory)
+                while (gameOn)
                 {
                     counter = -1;
                     string printProgress = String.Concat(printArray);
                     bool letterFound = false;
                     char playerChar = ' ';
 
-                    //decide victory
+                    if (lives == 1)
+                    {
+                        gameOn = false;
+                    }
+
                     if (printProgress == secretWord)
                     {
                         victory = true;
+                        gameOn = false;
+                        letterFound = true;
                     }
 
-                    
 
                     Console.WriteLine("current progress: " + printProgress);
                     Console.Write("\n\n");
 
                     Console.Write("Guess one letter or entire word: ");
-                    string playerGuess = ValidateUserChar();
-                    if (playerGuess.Length != 1)
-                    {
+                    string playerGuess = GetUserInput();
 
+                    
+                    if (playerGuess.Length == 1)
+                    {
+                       playerChar = Convert.ToChar(playerGuess);
+                    } else
+                    {
                         if (playerGuess == secretWord)
                         {
                             victory = true;
-                        } else
-                        {
-                            if (!incorrectGuess.ToString().Contains(playerGuess))
-                            {
-                                incorrectGuess.AppendFormat("{0:c}, ", playerGuess); 
-                            }
-
+                            gameOn = false;
+                            letterFound = true;
                         }
 
                     }
-                     else if (playerGuess.Length == 1)
-                    {
-                       playerChar = Convert.ToChar(playerGuess);
-                    }
-
 
                     if (!guessedLetters.Contains(playerChar))
                     {
@@ -197,18 +192,19 @@ namespace Hangman
                                 printArray[counter] = playerChar;
                                 letterFound = true;
                             }
+                            
                         }
+
 
                         if (letterFound)
                         {
-                            Console.WriteLine("Found {0}!", playerChar);
-                                
-                            
+                            Console.WriteLine("Found {0}!", playerGuess);
+                              
                         }
                         else
                         {
                             Console.WriteLine("{0} is not right, try again.", playerGuess);
-                            incorrectGuess.AppendFormat("{0:c}, ", playerChar);
+                            incorrectGuess.AppendFormat("{0:c}, ", playerGuess);
                             lives--;
                         }
                     }
@@ -218,19 +214,20 @@ namespace Hangman
                     }
 
                     WriteLine("\n" + incorrectGuess);
-                    WriteLine("Lives remaining: {0}\n\n", lives);
+                    WriteLine("Lives remaining: {0}\n", lives);
+
 
                 }
 
-                if (victory == true)
+                if (victory)
                 {
-                    Console.WriteLine("Congrats, you won!\n\n");
-                    Console.WriteLine("\n\nThe word was: {0}", secretWord);
+                    Console.WriteLine("The word was: {0}", secretWord);
+                    Console.WriteLine("\n\nCongrats, you won!");
                 }
                 else
                 {
+                    Console.WriteLine("The word was: {0}", secretWord);
                     Console.WriteLine("\n\nSorry, you lost!");
-                    Console.WriteLine("\n\nThe word was: {0}", secretWord);
                     
                 }
             }
